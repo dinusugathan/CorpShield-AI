@@ -1,0 +1,56 @@
+{
+  "total_test_cases": 6,
+  "passed_cases": 6,
+  "pass_rate_percentage": 100.0,
+  "policy_compliance_accuracy": 100.0,
+  "results": [
+    {
+      "test_id": "CORP-EVAL-01",
+      "passed": true,
+      "verdict_matched": true,
+      "citation_matched": true,
+      "latency_ms": 0.95,
+      "details": "Verdict: HARD_BLOCK | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.95ms"
+    },
+    {
+      "test_id": "CORP-EVAL-02",
+      "passed": true,
+      "verdict_matched": true,
+      "citation_matched": true,
+      "latency_ms": 0.06,
+      "details": "Verdict: COMPLIANT_APPROVED | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.06ms"
+    },
+    {
+      "test_id": "CORP-EVAL-03",
+      "passed": true,
+      "verdict_matched": true,
+      "citation_matched": true,
+      "latency_ms": 0.06,
+      "details": "Verdict: EXCEPTION_APPROVAL_REQUIRED | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.06ms"
+    },
+    {
+      "test_id": "CORP-EVAL-04",
+      "passed": true,
+      "verdict_matched": true,
+      "citation_matched": true,
+      "latency_ms": 0.04,
+      "details": "Verdict: COMPLIANT_APPROVED | Citations: ['SBI-HR-TRAVEL-CIR-2026/05'] | Latency: 0.04ms"
+    },
+    {
+      "test_id": "CORP-EVAL-05",
+      "passed": true,
+      "verdict_matched": true,
+      "citation_matched": true,
+      "latency_ms": 0.15,
+      "details": "Verdict: HARD_BLOCK | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.15ms"
+    },
+    {
+      "test_id": "CORP-EVAL-06",
+      "passed": true,
+      "verdict_matched": true,
+      "citation_matched": true,
+      "latency_ms": 0.04,
+      "details": "Verdict: GST_QUERY | Citations: ['GST-CORP-REGISTRY-2026', '32AAACS8577K1ZO'] | Latency: 0.04ms"
+    }
+  ]
+}

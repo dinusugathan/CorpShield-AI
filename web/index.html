@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CorpShield AI — Enterprise Corporate Travel Policy & Approval RAG Agent</title>
+  <meta name="description" content="Akbar Travels B2E corporate travel policy engine for SBI, PSUs, and enterprise accounts. Enforces grade ceilings, train cutoffs, and manager approval workflows.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+            <path d="M16 2v4M8 2v4M3 10h18"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">CorpShield <span class="gradient-text">AI</span></h1>
+          <p class="brand-subtitle">Akbar Travels B2E &bull; Corporate Travel Policy & Approval Engine (SBI & Corporates)</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" aria-label="Main Navigation">
+        <button id="tab-advisor-btn" class="nav-tab active" data-tab="advisor-view">
+          <span class="tab-icon">💼</span> Compliance Advisor
+        </button>
+        <button id="tab-policy-btn" class="nav-tab" data-tab="policy-view">
+          <span class="tab-icon">📜</span> Policy Manuals
+        </button>
+        <button id="tab-evals-btn" class="nav-tab" data-tab="evals-view">
+          <span class="tab-icon">📊</span> Corporate Evals
+        </button>
+      </nav>
+
+      <div class="header-status">
+        <div class="status-pill active-pill">
+          <span class="status-dot blue"></span>
+          <span>SBI Travel Policy Active</span>
+        </div>
+        <div class="status-pill active-pill">
+          <span class="status-dot green"></span>
+          <span>100% ITC GST Matched</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+
+      <!-- VIEW 1: COMPLIANCE ADVISOR -->
+      <section id="advisor-view" class="view-panel active-panel">
+        
+        <!-- Corporate Tenant Selector Bar -->
+        <div class="tenant-bar">
+          <div class="tenant-info">
+            <span class="tenant-tag">Active Corporate Client:</span>
+            <span id="tenant-name" class="tenant-name">State Bank of India (SBI)</span>
+          </div>
+          <div class="tenant-buttons">
+            <button id="tenant-sbi-btn" class="t-btn active" data-tenant="SBI">🏛️ State Bank of India</button>
+            <button id="tenant-tcs-btn" class="t-btn" data-tenant="TCS">🏢 Tata Consultancy Services</button>
+          </div>
+        </div>
+
+        <div class="chat-container">
+          <div id="chat-messages" class="chat-messages">
+            <div class="chat-bubble assistant-bubble">
+              <div class="bubble-header">
+                <span class="bubble-avatar">🛡️</span>
+                <span class="bubble-name">CorpShield Policy Desk</span>
+                <span class="bubble-badge">B2E Policy Interceptor</span>
+              </div>
+              <div class="bubble-body">
+                <p>Welcome to Akbar Travels Corporate Travel Desk. I validate flight and train bookings against corporate travel policies (SBI HR Circulars), enforce distance thresholds, flag budget overruns, and generate pre-filled Manager Approval Packets.</p>
+                
+                <div class="quick-prompts-label">Test a corporate booking scenario:</div>
+                <div class="quick-prompts-grid">
+                  <button class="quick-chip" data-query="I am an SBI Scale 2 Branch Manager. Can I book a flight from Pune to Mumbai (distance 150 km) for ₹3,800?">
+                    🚫 Pune-Mumbai 150 km (< 500 km Train Rule)
+                  </button>
+                  <button class="quick-chip" data-query="I am an SBI Scale 1 Officer traveling Mumbai to Delhi (1150 km) for official training. Fare is ₹5,800 booked 6 days in advance.">
+                    ✅ Compliant Booking (₹5,800 <= ₹6,500 Cap)
+                  </button>
+                  <button class="quick-chip" data-query="I am an SBI Scale 3 Manager traveling Delhi to Kolkata (1300 km). Available flight is ₹8,200 due to urgent audit tomorrow.">
+                    ⚠️ Budget Overrun & Manager Approval Packet
+                  </button>
+                  <button class="quick-chip" data-query="I am an SBI Scale 5 AGM flying Mumbai to Bengaluru for board review. Ticket is ₹8,500.">
+                    👔 Scale 5 AGM Approval (₹9,000 Cap)
+                  </button>
+                  <button class="quick-chip" data-query="Can an SBI Scale 1 Officer book Business Class on Air India DEL-BOM?">
+                    🚫 Business Class Eligibility Block
+                  </button>
+                  <button class="quick-chip" data-query="What is the mandatory SBI GSTIN for booking official tickets to our Local Head Office in Kochi, Kerala?">
+                    🏛️ SBI Kerala Branch GSTIN Lookup
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="chat-input-area">
+            <form id="chat-form" class="chat-form">
+              <input 
+                type="text" 
+                id="query-input" 
+                class="query-input" 
+                placeholder="Enter booking request (e.g. 'SBI Scale 2 flying Mumbai to Chennai 1000 km ₹6,200')..." 
+                autocomplete="off" 
+                required
+              />
+              <button type="submit" id="send-btn" class="send-btn">
+                <span>Evaluate</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- VIEW 2: POLICY MANUALS -->
+      <section id="policy-view" class="view-panel">
+        <div class="section-top">
+          <div>
+            <h2 class="section-title">Corporate Travel Policy Manuals</h2>
+            <p class="section-desc">Employee grade groups, airfare caps, distance cutoffs, and hotel allowances.</p>
+          </div>
+        </div>
+        <div id="policies-grid" class="policies-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- VIEW 3: CORPORATE EVALS -->
+      <section id="evals-view" class="view-panel">
+        <div class="section-top">
+          <div>
+            <h2 class="section-title">Corporate Compliance Evaluation Suite</h2>
+            <p class="section-desc">Testing grade entitlement accuracy, minimum distance rules, budget ceilings, and GSTIN matching.</p>
+          </div>
+          <button id="run-evals-btn" class="action-btn">
+            ⚡ Run Compliance Benchmark
+          </button>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Benchmark Pass Rate</div>
+            <div class="kpi-value text-emerald" id="kpi-pass-rate">100%</div>
+            <div class="kpi-sub">Across 6 Enterprise Scenarios</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Policy Compliance</div>
+            <div class="kpi-value text-sky" id="kpi-compliance">100.0%</div>
+            <div class="kpi-sub">Zero unauthorized bookings</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">GST Input Tax Credit</div>
+            <div class="kpi-value text-indigo">100%</div>
+            <div class="kpi-sub">Validated against state registry</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Execution Latency</div>
+            <div class="kpi-value text-amber">&lt; 1 ms</div>
+            <div class="kpi-sub">Deterministic policy rules</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="evals-table">
+            <thead>
+              <tr>
+                <th>Test Case ID</th>
+                <th>Status</th>
+                <th>Verdict Verification</th>
+                <th>HR Policy Citation</th>
+                <th>Latency</th>
+              </tr>
+            </thead>
+            <tbody id="evals-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
