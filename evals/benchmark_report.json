@@ -9,48 +9,48 @@
       "passed": true,
       "verdict_matched": true,
       "citation_matched": true,
-      "latency_ms": 0.95,
-      "details": "Verdict: HARD_BLOCK | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.95ms"
+      "latency_ms": 13.74,
+      "details": "Verdict: HARD_BLOCK | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 13.74ms"
     },
     {
       "test_id": "CORP-EVAL-02",
       "passed": true,
       "verdict_matched": true,
       "citation_matched": true,
-      "latency_ms": 0.06,
-      "details": "Verdict: COMPLIANT_APPROVED | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.06ms"
+      "latency_ms": 6.78,
+      "details": "Verdict: COMPLIANT_APPROVED | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 6.78ms"
     },
     {
       "test_id": "CORP-EVAL-03",
       "passed": true,
       "verdict_matched": true,
       "citation_matched": true,
-      "latency_ms": 0.06,
-      "details": "Verdict: EXCEPTION_APPROVAL_REQUIRED | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.06ms"
+      "latency_ms": 7.86,
+      "details": "Verdict: EXCEPTION_APPROVAL_REQUIRED | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 7.86ms"
     },
     {
       "test_id": "CORP-EVAL-04",
       "passed": true,
       "verdict_matched": true,
       "citation_matched": true,
-      "latency_ms": 0.04,
-      "details": "Verdict: COMPLIANT_APPROVED | Citations: ['SBI-HR-TRAVEL-CIR-2026/05'] | Latency: 0.04ms"
+      "latency_ms": 6.63,
+      "details": "Verdict: COMPLIANT_APPROVED | Citations: ['SBI-HR-TRAVEL-CIR-2026/05'] | Latency: 6.63ms"
     },
     {
       "test_id": "CORP-EVAL-05",
       "passed": true,
       "verdict_matched": true,
       "citation_matched": true,
-      "latency_ms": 0.15,
-      "details": "Verdict: HARD_BLOCK | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 0.15ms"
+      "latency_ms": 6.64,
+      "details": "Verdict: HARD_BLOCK | Citations: ['SBI-HR-TRAVEL-CIR-2026/04'] | Latency: 6.64ms"
     },
     {
       "test_id": "CORP-EVAL-06",
       "passed": true,
       "verdict_matched": true,
       "citation_matched": true,
-      "latency_ms": 0.04,
-      "details": "Verdict: GST_QUERY | Citations: ['GST-CORP-REGISTRY-2026', '32AAACS8577K1ZO'] | Latency: 0.04ms"
+      "latency_ms": 7.96,
+      "details": "Verdict: GST_VERIFIED | Citations: ['SBI-GST-MANDATE-2026'] | Latency: 7.96ms"
     }
   ]
 }

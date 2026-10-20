@@ -122,6 +122,27 @@ document.addEventListener('DOMContentLoaded', () => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
+  window.approveException = async function(threadId, btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Resuming LangGraph State Machine...";
+    try {
+      const res = await fetch('/api/approval/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thread_id: threadId })
+      });
+      if (!res.ok) throw new Error("Approval failed");
+      const updatedData = await res.json();
+      appendAssistantBubble(updatedData);
+      btn.textContent = "✅ Exception Approved (HITL)";
+      btn.style.background = "#10b981";
+    } catch (e) {
+      alert("Error: " + e.message);
+      btn.disabled = false;
+      btn.textContent = "⚡ Approve Exception (Human-in-the-Loop)";
+    }
+  };
+
   function appendAssistantBubble(data) {
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble assistant-bubble';
@@ -132,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
       packetHtml = `
         <div class="approval-packet-card">
           <div class="packet-header">
-            <span class="packet-title">📑 Pre-Filled Manager Approval Packet</span>
+            <span class="packet-title">📑 Human-in-the-Loop Approval Intercept</span>
             <span class="packet-badge">+₹${p.budget_overrun.toFixed(2)} OVERRUN</span>
           </div>
           <div class="packet-body">
@@ -140,24 +161,43 @@ document.addEventListener('DOMContentLoaded', () => {
             <div><strong>Sector / Route:</strong> ${escapeHtml(p.route)}</div>
             <div><strong>Selected Fare:</strong> ₹${p.selected_fare.toFixed(2)} (Policy Limit: ₹${p.max_allowed_fare.toFixed(2)})</div>
             <div><strong>Exception Grounds:</strong> ${escapeHtml(p.reason_for_exception)}</div>
-            <button class="packet-btn" onclick="alert('Approval packet dispatched to reporting authority.')">
-              ⚡ Dispatch One-Click Approval Link
+            <button class="packet-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); cursor: pointer;" onclick="window.approveException('${data.thread_id}', this)">
+              ⚡ Approve Exception (Human-in-the-Loop)
             </button>
           </div>
         </div>
       `;
     }
 
+    // Render LangGraph Trace steps if present
+    let traceHtml = '';
+    if (data.trace_steps && data.trace_steps.length > 0) {
+      traceHtml = `
+        <div style="margin-top: 10px; padding: 8px 12px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+          <div style="color: #38bdf8; font-weight: 600; margin-bottom: 4px;">🕸️ LangGraph Multi-Node Trace (${data.trace_steps.length} nodes):</div>
+      `;
+      data.trace_steps.forEach(s => {
+        traceHtml += `
+          <div style="display: flex; justify-content: space-between; color: #94a3b8; padding: 2px 0;">
+            <span style="color: #a78bfa;">${s.node}</span>
+            <span>${s.duration_ms}ms</span>
+          </div>
+        `;
+      });
+      traceHtml += `</div>`;
+    }
+
     bubble.innerHTML = `
       <div class="bubble-header">
         <span class="bubble-avatar">🛡️</span>
-        <span class="bubble-name">CorpShield Policy Desk</span>
+        <span class="bubble-name">CorpShield LangGraph Agent</span>
         <span class="bubble-badge">${data.verdict ? data.verdict.verdict : 'GST Validation'}</span>
         <span class="bubble-badge" style="background: rgba(14, 165, 233, 0.2); color: #7dd3fc;">${data.latency_ms.toFixed(1)}ms</span>
       </div>
       <div class="bubble-body">
         <div style="white-space: pre-line; line-height: 1.55;">${formatMarkdown(data.answer)}</div>
         ${packetHtml}
+        ${traceHtml}
       </div>
     `;
 

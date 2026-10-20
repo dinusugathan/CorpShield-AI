@@ -18,31 +18,29 @@ Akbar Travels manages corporate travel accounts for premier banking and PSU inst
 
 ---
 
-## 🏗️ Architecture Pipeline
+## 🏗️ Architecture Pipeline: LangGraph State Machine with Human-in-the-Loop (HITL)
 
 ```mermaid
 flowchart TD
-    EmployeeQuery["Corporate Booking Request\n('SBI Scale 2 flying Pune to Mumbai 150 km ₹3,800')"] --> IntentExtractor["1. Intent & Parameter Extraction\n(Tenant: SBI, Grade: Scale 2, Route: PNQ-BOM, Dist: 150 km)"]
+    START([START: Corporate Booking Query]) --> Router["1. tenant_router_node\n(Tenant Isolation: SBI vs TCS, Grade, Fare, Distance, Route)"]
     
-    IntentExtractor --> TenantRAG["2. Multi-Tenant Isolated Policy RAG\n(Tenant: SBI -> HR Travel Circular 2026/04)"]
+    Router -->|is_gst_query| GSTNode["2. gst_verification_node\n(State-Specific GSTIN Matching for 100% ITC Recovery)"]
+    Router -->|travel_booking| ComplianceNode["3. compliance_evaluator_node\n(Validates Distance > 500km, Cabin Class, Budget Cap)"]
     
-    TenantRAG --> ComplianceTool["3. Deterministic Compliance Tool"]
+    ComplianceNode -->|EXCEPTION_APPROVAL_REQUIRED| ManagerNode["4. manager_approval_node\n(Human-in-the-Loop State Pause / MemorySaver Checkpoint)"]
+    ComplianceNode -->|COMPLIANT / HARD_BLOCK| Synthesis["5. synthesis_node\n(Structured Authorization Verdict & Citation)"]
     
-    subgraph RuleChecks ["Corporate Policy Rule Validation"]
-        DistanceCheck{"Distance > 500 km Cutoff?"}
-        CabinCheck{"Cabin Class Eligible?"}
-        BudgetCheck{"Fare <= Band Cap (₹6,500)?"}
-        GSTCheck{"State GSTIN Matched for ITC?"}
-    end
+    ManagerNode -->|Approved via /api/approval/approve| Synthesis
+    GSTNode --> Synthesis
     
-    ComplianceTool --> RuleChecks
-    
-    RuleChecks -- "< 500 km (150 km)" --> HardBlock["Verdict: HARD_BLOCK\n(Entitled to Train / Road per SBI Circular)"]
-    RuleChecks -- "Over Budget (₹8,200 > ₹6,500)" --> ExceptionPacket["Verdict: EXCEPTION_APPROVAL_REQUIRED\n(Pre-generates One-Click Approval Link)"]
-    RuleChecks -- "All Compliant" --> Approved["Verdict: COMPLIANT_APPROVED\n(Pre-approved for ticketing)"]
-    
-    HardBlock & ExceptionPacket & Approved --> WebUI["4. Akbar Travels B2E Portal (Port 8003)"]
+    Synthesis --> END([END: Response with Audit Trail + Trace Steps])
 ```
+
+### 🧠 Key Agentic AI Innovations in Project 4:
+1. **LangGraph Stateful Graph (`engine/graph.py`):** Replaces linear `if/else` chains with a 5-node cyclic state machine managing complex corporate entitlement states.
+2. **Human-in-the-Loop (HITL) State Checkpointing (`MemorySaver`):** When a booking exceeds the employee's budget ceiling (e.g. SBI Scale 3 booking ₹8,200 flight vs ₹6,500 cap), the graph intercepts execution in `manager_approval_node`, persists state under a unique `thread_id`, and pauses.
+3. **Dynamic State Resumption:** Upon manager authorization via `POST /api/approval/approve`, LangGraph rehydrates the persisted state from memory, marks the order `APPROVED_BY_MANAGER`, and unlocks GDS ticketing without re-running prior checks.
+4. **Tenant-Isolated Policy Enforcement:** Zero-leakage boundaries separating State Bank of India circulars from corporate clients like TCS.
 
 ---
 

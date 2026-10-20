@@ -45,6 +45,8 @@ class CorporateAgentResponse(BaseModel):
     verdict: Optional[PolicyComplianceVerdict] = None
     answer: str
     policy_citations: List[str] = Field(default_factory=list)
+    thread_id: Optional[str] = None
+    trace_steps: List[Dict[str, Any]] = Field(default_factory=list)
     latency_ms: float = 0.0
 
 class CorpEvalCaseResult(BaseModel):

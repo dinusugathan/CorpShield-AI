@@ -96,3 +96,23 @@ class CorporateComplianceTool:
             if state.lower() in state_name.lower():
                 return gstin
         return None
+
+    def verify_state_gstin(self, tenant_id: str, state_name: str) -> Dict[str, Any]:
+        gstin = self.lookup_corporate_gst(tenant_id, state_name)
+        corp_gst = self.gst_registry.get(tenant_id, {})
+        if not gstin:
+            gstin = corp_gst.get("Maharashtra") or list(corp_gst.values())[0]
+            matched_state = "Maharashtra (Corporate HQ)"
+        else:
+            matched_state = state_name
+
+        entity_name = "State Bank of India" if tenant_id == "SBI" else "Tata Consultancy Services"
+        citation = f"{tenant_id}-GST-MANDATE-2026"
+        return {
+            "tenant_id": tenant_id,
+            "entity_name": entity_name,
+            "state": matched_state,
+            "gstin": gstin,
+            "citation": citation,
+            "itc_eligible": True
+        }

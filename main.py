@@ -3,6 +3,7 @@ import json
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 from pydantic import BaseModel
 
 from engine.agent import CorpShieldAgent
@@ -34,12 +35,16 @@ agent = CorpShieldAgent(POL_PATH, GST_PATH)
 
 class CorporateQueryRequest(BaseModel):
     query: str
+    thread_id: Optional[str] = None
+
+class ManagerApprovalRequest(BaseModel):
+    thread_id: str
 
 @app.get("/api/health")
 def health_check():
     return {
         "status": "healthy",
-        "service": "CorpShield AI",
+        "service": "CorpShield AI (LangGraph HITL State Machine)",
         "clients": list(agent.policies.keys()),
         "total_policies": sum(len(v) for v in agent.policies.values())
     }
@@ -48,7 +53,13 @@ def health_check():
 def handle_corporate_query(payload: CorporateQueryRequest):
     if not payload.query or not payload.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
-    return agent.process_query(payload.query.strip())
+    return agent.process_query(payload.query.strip(), thread_id=payload.thread_id)
+
+@app.post("/api/approval/approve", response_model=CorporateAgentResponse)
+def handle_manager_approval(payload: ManagerApprovalRequest):
+    if not payload.thread_id:
+        raise HTTPException(status_code=400, detail="thread_id is required to resume HITL state.")
+    return agent.approve_manager_exception(payload.thread_id)
 
 @app.get("/api/policies")
 def get_policies():
